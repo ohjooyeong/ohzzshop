@@ -5,6 +5,7 @@ import ImageSilder from "../../utils/ImageSilder";
 import CheckBox from "./Section/CheckBox";
 import RadioBox from "./Section/RadioBox";
 import { continents, price } from "./Section/Datas";
+import SearchFeature from "./Section/SearchFeature";
 
 function LandingPage() {
     const [Products, setProducts] = useState([]);
@@ -16,6 +17,7 @@ function LandingPage() {
         continents: [],
         price: [],
     });
+    const [SearchTerm, setSearchTerm] = useState("");
 
     useEffect(() => {
         let body = {
@@ -49,6 +51,7 @@ function LandingPage() {
             limit: Limit,
             loadMore: true,
             filters: Filters,
+            searchTerm: SearchTerm,
         };
         getProducts(body);
         setSkip(skip);
@@ -59,6 +62,7 @@ function LandingPage() {
             skip: 0,
             limit: Limit,
             filters: filters,
+            searchTerm: SearchTerm,
         };
 
         getProducts(body);
@@ -101,6 +105,18 @@ function LandingPage() {
         );
     });
 
+    const updateSearchTerm = (newSearchTerm) => {
+        let body = {
+            skip: 0,
+            limit: Limit,
+            filters: Filters,
+            searchTerm: newSearchTerm,
+        };
+        setSkip(0);
+        setSearchTerm(newSearchTerm);
+        getProducts(body);
+    };
+
     return (
         <div style={{ width: "75%", margin: "3rem auto" }}>
             <div style={{ textAlign: "center" }}>
@@ -124,7 +140,9 @@ function LandingPage() {
                     />
                 </Col>
             </Row>
-
+            <div style={{ display: "flex", justifyContent: "flex-end", margin: "1rem auto" }}>
+                <SearchFeature refreshFunction={updateSearchTerm} />
+            </div>
             <Row gutter={[16, 16]}>{renderCards}</Row>
 
             <br />
