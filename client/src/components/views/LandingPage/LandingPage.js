@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Icon, Col, Card, Row } from "antd";
 import ImageSilder from "../../utils/ImageSilder";
+import CheckBox from "./Section/CheckBox";
+import RadioBox from "./Section/RadioBox";
+import { continents, price } from "./Section/Datas";
 
 function LandingPage() {
     const [Products, setProducts] = useState([]);
@@ -9,6 +12,10 @@ function LandingPage() {
     const [Limit, setLimit] = useState(8);
     const [PostSize, setPostSize] = useState(0);
     const [NextProduct, setNextProduct] = useState(true);
+    const [Filters, setFilters] = useState({
+        continents: [],
+        price: [],
+    });
 
     useEffect(() => {
         let body = {
@@ -41,9 +48,47 @@ function LandingPage() {
             skip: skip,
             limit: Limit,
             loadMore: true,
+            filters: Filters,
         };
         getProducts(body);
         setSkip(skip);
+    };
+
+    const showFilteredResults = (filters) => {
+        let body = {
+            skip: 0,
+            limit: Limit,
+            filters: filters,
+        };
+
+        getProducts(body);
+        setSkip(0);
+    };
+
+    const handlePrice = (value) => {
+        const data = price;
+        let array = [];
+
+        for (let key in data) {
+            if (data[key]._id === parseInt(value, 10)) {
+                array = data[key].array;
+            }
+        }
+
+        return array;
+    };
+
+    const handleFilters = (filters, category) => {
+        const newFilters = { ...Filters };
+        newFilters[category] = filters;
+
+        if (category === "price") {
+            let priceValues = handlePrice(filters);
+            newFilters[category] = priceValues;
+        }
+
+        showFilteredResults(newFilters);
+        setFilters(newFilters);
     };
 
     const renderCards = Products.map((product, index) => {
@@ -63,6 +108,23 @@ function LandingPage() {
                     Let's Travel Anywhere <Icon type="rocket"></Icon>
                 </h2>
             </div>
+            {/* Filter */}
+            <Row gutter={[16, 16]}>
+                <Col lg={12} xs={24}>
+                    {/* CheckBox */}
+                    <CheckBox
+                        list={continents}
+                        handleFilters={(filters) => handleFilters(filters, "continents")}
+                    />
+                </Col>
+                <Col lg={12} xs={24}>
+                    <RadioBox
+                        list={price}
+                        handleFilters={(filters) => handleFilters(filters, "price")}
+                    />
+                </Col>
+            </Row>
+
             <Row gutter={[16, 16]}>{renderCards}</Row>
 
             <br />
