@@ -135,8 +135,25 @@ router.get("/removeFromCart", auth, (req, res) => {
                 });
         }
     );
+});
 
-    // product collection에서 현재 남아있는 상품들의 정보를 가져오기
+router.post("/successBuy", auth, (req, res) => {
+    // User Collection 안에 History 필드 안에 간단한 결제 정보 주기
+    let history = [];
+    let transactionData = {};
+
+    req.body.cartDetail.forEach((item) => {
+        history.push({
+            dataOfPurchase: Date.now(),
+            name: item.title,
+            id: item._id,
+            price: item.price,
+            quantity: item.quantity,
+            paymentId: req.body.paymentData.paymentID,
+        });
+    });
+    // Payment Collection안에 자세한 결제 정보들 넣어주기
+    // Product Collection안에 있는 sold 필드 정보 업데이트 시켜주기
 });
 
 module.exports = router;
