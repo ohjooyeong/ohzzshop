@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getCartItems, removeCartItem } from "../../../_actions/user_actions";
 import UserCardBlock from "./Section/UserCardBlock";
+import Paypal from "../../utils/Paypal";
 
 const CartPage = (props) => {
     const dispatch = useDispatch();
@@ -65,6 +66,7 @@ const CartPage = (props) => {
                     <p>No Items In the Cart</p>
                 </div>
             )}
+            <Paypal />
         </div>
     );
 };
