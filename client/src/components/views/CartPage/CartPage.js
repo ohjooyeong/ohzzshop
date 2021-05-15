@@ -50,13 +50,21 @@ const CartPage = (props) => {
             onSuccessBuy({
                 paymentData: data,
                 cartDetail: props.user.cartDetail,
-            }).then((response) => {
-                if (response.payload.success) {
-                    setShowTotal(false);
-                    setShowSuccess(true);
-                }
             })
-        );
+        ).then((response) => {
+            if (response.payload.success) {
+                setShowTotal(false);
+                setShowSuccess(true);
+            }
+        });
+    };
+
+    const transactionError = () => {
+        console.log("Paypal error");
+    };
+
+    const transactionCanceled = () => {
+        console.log("Transaction canceled");
     };
 
     return (
@@ -84,7 +92,14 @@ const CartPage = (props) => {
                     <p>No Items In the Cart</p>
                 </div>
             )}
-            {ShowTotal && <Paypal total={Total} onSuccess={transactionSuccess} />}
+            {ShowTotal && (
+                <Paypal
+                    total={Total}
+                    onSuccess={transactionSuccess}
+                    transactionError={transactionError}
+                    transactionCanceled={transactionCanceled}
+                />
+            )}
         </div>
     );
 };
