@@ -2,11 +2,15 @@ import React from "react";
 import PaypalExpressBtn from "react-paypal-express-checkout";
 
 export default class Paypal extends React.Component {
+    state = {
+        finish: true,
+    };
     render() {
         const onSuccess = (payment) => {
             // Congratulation, it came here means everything's fine!
             console.log("The payment was succeeded!", payment);
             this.props.onSuccess(payment);
+            this.setState({ finish: false });
             // You can bind the "payment" object's value to your state or props or whatever here, please see below for sample returned data
         };
 

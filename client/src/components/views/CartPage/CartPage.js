@@ -1,4 +1,4 @@
-import { Empty } from "antd";
+import { Empty, Result } from "antd";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getCartItems, removeCartItem, onSuccessBuy } from "../../../_actions/user_actions";
@@ -9,6 +9,7 @@ const CartPage = (props) => {
     const dispatch = useDispatch();
     const [Total, setTotal] = useState(0);
     const [ShowTotal, setShowTotal] = useState(false);
+    const [ShowSuccess, setShowSuccess] = useState(false);
 
     useEffect(() => {
         // 리덕스 User state안에 cart안에 상품이 들어있는지 확인
@@ -24,6 +25,7 @@ const CartPage = (props) => {
             }
         }
     }, [props.user.userData]);
+
     let calculateTotal = (cartDetail) => {
         let total = 0;
         cartDetail.map((item) => {
@@ -51,6 +53,7 @@ const CartPage = (props) => {
             }).then((response) => {
                 if (response.payload.success) {
                     setShowTotal(false);
+                    setShowSuccess(true);
                 }
             })
         );
@@ -60,10 +63,13 @@ const CartPage = (props) => {
         <div style={{ width: "85%", margin: "3rem auto" }}>
             <h1>내 장바구니</h1>
             <UserCardBlock products={props.user.cartDetail} removeItem={removeFromCart} />
+
             {ShowTotal ? (
                 <div style={{ marginTop: "3rem" }}>
                     <h2>총 가격: ${Total}</h2>
                 </div>
+            ) : ShowSuccess ? (
+                <Result status="success" title="Successfully Purchased Items" />
             ) : (
                 <div
                     style={{
